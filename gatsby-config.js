@@ -5,6 +5,13 @@ module.exports = {
     description: `Portfolio Website of Min Maung Maung`,
   },
   plugins: [
+      {
+          resolve: `gatsby-plugin-google-analytics`,
+          options: {
+              trackingId: "G-F18GKG4P4H",
+              head: true,
+          },
+      },
     "gatsby-plugin-gatsby-cloud",
     "gatsby-plugin-fontawesome-css",
     `gatsby-plugin-sass`,
@@ -20,6 +27,6 @@ module.exports = {
               start_url: '/',
               icon: 'src/images/icon.png',
           },
-      }
+      },
   ],
 };
