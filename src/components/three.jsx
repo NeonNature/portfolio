@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState, Suspense } from "react";
-import { container } from "./three.module.scss";
+import { container, canvas } from "./three.module.scss";
 import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
 import {
     Box,
@@ -9,9 +9,12 @@ import {
     PerspectiveCamera,
     useScroll,
     Sky,
-    Cloud, Stars,
+    Stars,
+    Image,
+    Billboard, useTexture,
 } from "@react-three/drei";
 import Ocean from "./threejs/ocean";
+import CloudImage from "../images/cloud.png";
 
 // function BoxF(props) {
 //     const ref = useRef()
@@ -68,6 +71,32 @@ import Ocean from "./threejs/ocean";
 //   );
 // }
 
+// const Cloud = () => {
+//         const ref = useRef()
+//         useFrame(() => {
+//             ref.current.material.zoom = 1
+//             ref.current.material.grayscale = 1
+//             // ref.current.material.color.set('red');
+//             // ref.current.material.backgroundColor = 'red';
+//         })
+//         return <Image ref={ref} url={CloudImage} position={[0,5,90]} />
+// }
+
+const Cloud = ({ position }) => {
+    const texture = useTexture(CloudImage);
+  return (
+    <Billboard
+      follow={true}
+      lockX={false}
+      lockY={false}
+      lockZ={false}
+      position={position}
+    >
+      <Plane material-map={texture} material-transparent={true} args={[10,10]} />
+    </Billboard>
+  );
+};
+
 const Composition = () => {
   const scroll = useScroll();
   const initialX = 0;
@@ -83,30 +112,8 @@ const Composition = () => {
 
   return (
     <>
-      {/*<BoxF position={[-1.2, 0, 0]} />*/}
-      {/*<Plane position={[1.2, 0, 0]} />*/}
-      {/*<Box rotation={[10, 10, 10]} args={[1, 1, 1]} position={[-1.2, 0, 0]} >*/}
-      {/*  <meshStandardMaterial attach="material" color="orange" />*/}
-      {/*</Box>*/}
-
-      {/*<Box args={[1, 1, 1]} position={[0, 15, 90]} rotation={[10, 10, 10]}>*/}
-      {/*  <meshStandardMaterial attach="material" color="orange" />*/}
-      {/*</Box>*/}
-
-      {/*<Plane*/}
-      {/*  args={[200, 200]}*/}
-      {/*  position={[0, 0, 0]}*/}
-      {/*  rotation={[-Math.PI / 2.1, 0, 0]}*/}
-      {/*>*/}
-      {/*  <meshStandardMaterial attach="material" color="orange" />*/}
-      {/*</Plane>*/}
       <Suspense fallback={null}>
-        <Cloud position={[0, 15, 90]} args={[3, 2]} />
-        <Cloud position={[-4, -2, 0]} args={[3, 2]} />
-        <Cloud position={[-4, 2, 0]} args={[3, 2]} />
-        <Cloud args={[3, 2]} />
-        <Cloud position={[4, -2, 0]} args={[3, 2]} />
-        <Cloud position={[4, 2, 0]} args={[3, 2]} />
+        <Cloud position={[0, 200, 70]} />
         <Ocean />
       </Suspense>
       <Sky
@@ -119,8 +126,6 @@ const Composition = () => {
         inclination={0.49}
         azimuth={0.25}
       />
-        {/*<Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />*/}
-      {/*<Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />*/}
       <ambientLight intensity={0.5} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <pointLight position={[-10, -10, -10]} />
@@ -132,6 +137,7 @@ const Three = () => {
   return (
     <div className={container}>
       <Canvas
+        className={canvas}
         camera={{
           position: [0, 5, 10],
           // , fov: 55, near: 1, far: 20000
